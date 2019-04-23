@@ -56,30 +56,35 @@ class Classifier:
     
     def load_file(self, filename):
         # Create a reader
-        self.csf_reader = vcf.Reader(open(filename))
+        self.vcf_reader = vcf.Reader(open(filename))
         
         
     def classify(self):
         # Load reader
-        csf_reader= self.csf_reader
+        vcf_reader= self.vcf_reader
         
         # List for benign alleles
         exomes = []
+        count=0
         # Use an enumerator to go through the records
-        for count, record in enumerate(csf_reader):
-            #if count <25: # For testing, only take the first x rows
-            if count > 0: # Use all rows
-                # Get information from the record
-                attr = {
-                    'Name' : record.CHROM,
-                    'ID': record.ID,
-                    'Allele frequency': record.INFO["AF"][0]
-                }
-                # Store the allele if it is found in less than 1% of the population
-                if attr.get('Allele frequency') < 0.01:
-                    exomes.append(attr)
-            else:
-                break
+        for record in vcf_reader:
+            count+=1
+            try:
+                if count <25: # For testing, only take the first x rows
+                #if count > 0: # Use all rows
+                    # Get information from the record
+                    attr = {
+                        'Name' : record.CHROM,
+                        'ID': record.ID,
+                        'Allele frequency': record.INFO["AF"][0]
+                    }
+                    # Store the allele if it is found in less than 1% of the population
+                    if attr.get('Allele frequency') < 0.01:
+                        exomes.append(attr['ID'])
+                else:
+                    break
+            except:
+                pass
     
         print("Exomes found:")
         print(exomes)
