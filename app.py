@@ -5,7 +5,7 @@ import os
 import vcf # pip install PyVCF
 import pandas as pdb
 import numpy 
-
+from werkzeug.exceptions import BadRequest
 
 # 3rd party imports 
 from flask import Flask, request, jsonify
@@ -21,10 +21,10 @@ def index():
     # Retrieve data from request
     data = request.get_json()
     
+    filename = "data/gnomad.exomes.r2.1.1.sites.21.vcf"
     # Load the file
     if 'filename' in data:
         filename = data['filename']
-    filename = "data/gnomad.exomes.r2.1.1.sites.21.vcf"
     CLASSIFIER.load_file(filename)
     
     # Classify
@@ -56,7 +56,10 @@ class Classifier:
     
     def load_file(self, filename):
         # Create a reader
-        self.vcf_reader = vcf.Reader(open(filename))
+        try:
+            self.vcf_reader = vcf.Reader(open(filename))
+        except FileNotFoundError:
+            raise BadRequest('The file could not be opened, please check the filename.')
         
         
     def classify(self):
