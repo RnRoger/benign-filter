@@ -4,8 +4,8 @@ import os
 
 import vcf # pip install PyVCF
 import pandas as pdb
-import numpy 
-from werkzeug.exceptions import BadRequest
+import numpy
+from werkzeug.exceptions import BadRequest # For custom error messages
 
 # 3rd party imports 
 from flask import Flask, request, jsonify
