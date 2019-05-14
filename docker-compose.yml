@@ -7,7 +7,8 @@ services:
       dockerfile: Dockerfile
     working_dir: /app
     volumes:
-      - .:/app
+      - ./data:/app/data # No need to copy the data folder
+      - ./logs:/app/.snakemake/log
     ports:
       - 8080:80
   es01:
@@ -28,12 +29,32 @@ services:
       - esdata01:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+    networks:
+      - benign-filter-network
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    container_name: es02
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+    networks:
+      - benign-filter-network
 
 volumes:
   esdata01:
     driver: local
+  esdata02:
+    driver: local
 
 networks:
-  default:
-    external:
-      name: benign-filter-network
+  benign-filter-network:
