@@ -5,10 +5,12 @@ WORKDIR /app
 COPY requirements.txt ./
 COPY app.py ./
 COPY Snakefile ./
+COPY elastic\ ./elastic
 RUN pip install --upgrade pip &&\
     pip install numpy &&\
     pip install -r requirements.txt &&\
-    pip install Snakemake
+    apt-get update &&\
+    apt-get install nano
 
 
 
@@ -16,5 +18,5 @@ RUN pip install --upgrade pip &&\
 
 EXPOSE 80
 
-#CMD ["python", "-u", "app.py"]
-CMD ["snakemake", "-n"]
+CMD ["python", "-u", "app.py"]
+#CMD ["snakemake", "-n"]

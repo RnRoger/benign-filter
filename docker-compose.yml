@@ -49,6 +49,16 @@ services:
       - esdata02:/usr/share/elasticsearch/data
     networks:
       - benign-filter-network
+  kibana:
+    container_name: benign-filter-kibana
+    image: docker.elastic.co/kibana/kibana:7.0.0
+    # environment: 
+    #   #SERVER_NAME: kibana.example.org
+    #   ELASTICSEARCH_HOST: http://localhost:9200
+    ports:
+      - 5601:5601
+    networks:
+      - benign-filter-network
 
 volumes:
   esdata01:
