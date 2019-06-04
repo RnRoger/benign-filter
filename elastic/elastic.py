@@ -1,6 +1,6 @@
 import json
 from elasticsearch import Elasticsearch, helpers
-ES = Elasticsearch([{'host': 'localhost', 'port': '9200'}])
+ES = Elasticsearch([{'host': 'elasticsearch', 'port': '9200'}])
 ES.indices.create(index="test")
 docs = json.load(open('./upload.json'))
 

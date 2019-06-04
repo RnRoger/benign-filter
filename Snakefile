@@ -1,3 +1,4 @@
+gnomad files = ["data/gnomad.exomes.r2.1.1.sites.21.vcf"]
 rule all:
     input:
         "data/gnomad.exomes.r2.1.1.sites.21.vcf"
@@ -5,10 +6,6 @@ rule all:
 rule FlaskApp:
     shell:
         "python app.py &" 
-
-rule test2:
-    shell:
-        "echo NOTICE ME NOTICE ME 2\n echo NOTICE ME NOTICE ME2"
 
 rule SendRequest:
     shell:
