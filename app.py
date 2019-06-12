@@ -1,10 +1,7 @@
 #!/usr/bin/python3
 """Handle connections and send back results"""
 import os
-<<<<<<< HEAD
 import json
-=======
->>>>>>> 42c20fe88e9628c9a6b4b6420913355a3ff2f478
 
 import vcf # pip install PyVCF
 import pandas as pdb
@@ -34,34 +31,12 @@ def index():
     # Classify
     classification = CLASSIFIER.classify()
     
-<<<<<<< HEAD
     # return jsonify(classification)
     with open(f"data/{data['chr']}.json", "w") as outfile:
         json.dump(classification, outfile)
     return "ok"
     
 
-=======
-    return jsonify(classification)
-    
-
-    """
-    model = 'general-10e-300v.bin'
-    if 'model' in data:
-        model = data['model']
-    CLASSIFIER.load(model)
-
-    if 'tokens' in data:
-        classification = CLASSIFIER.tokens(data['tokens'])
-        return jsonify(classification)
-    elif 'text' in data:
-        classification = CLASSIFIER.text(data['text'])
-        return jsonify(classification)
-
-    return jsonify({})
-    """
-
->>>>>>> 42c20fe88e9628c9a6b4b6420913355a3ff2f478
 class Classifier:
     def __init__(self):
         # self.sumthin = ?
@@ -86,7 +61,6 @@ class Classifier:
         for record in vcf_reader:
             count+=1
             try:
-<<<<<<< HEAD
                 if count <10: # For testing, only take the first x rows
                 #if count > 0: # Use all rows
                     # Get information from the record
@@ -96,33 +70,16 @@ class Classifier:
                         'POS' : record.POS,
                         'REF' : record.REF,
                         'NAME': record.ID,
-=======
-                if count <25: # For testing, only take the first x rows
-                #if count > 0: # Use all rows
-                    # Get information from the record
-                    attr = {
-                        'Name' : record.CHROM,
-                        'ID': record.ID,
->>>>>>> 42c20fe88e9628c9a6b4b6420913355a3ff2f478
                         'Allele frequency': record.INFO["AF"][0]
                     }
                     # Store the allele if it is found in less than 1% of the population
                     if attr.get('Allele frequency') < 0.01:
-<<<<<<< HEAD
                         exomes.append(attr)
-=======
-                        exomes.append(attr['ID'])
->>>>>>> 42c20fe88e9628c9a6b4b6420913355a3ff2f478
                 else:
                     break
             except:
                 pass
     
-<<<<<<< HEAD
-=======
-        print("Exomes found:")
-        print(exomes)
->>>>>>> 42c20fe88e9628c9a6b4b6420913355a3ff2f478
         return exomes
 
 
