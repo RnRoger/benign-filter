@@ -1,10 +1,12 @@
-# 18, 21, y
+# Add the chromosomes you want to index to this list
 GNOMAD_FILES = ["18", "y"]
 
+# Final rule which collects the output
 rule all:
     input:
         expand("data/{gnomad}report.html", gnomad=GNOMAD_FILES)
 
+# Retrieve the gnomad data from vcf files
 rule SendRequest:
     input:
         "data/gnomad.exomes.r2.1.1.sites.{gnomad}.vcf",
@@ -15,6 +17,7 @@ rule SendRequest:
     shell:
         "python send_curl.py {input} {params.gnoname}"
 
+# Retrieve ensembl data
 rule ensembl:
     input:
         "data/{gnomad}.json",
@@ -25,6 +28,7 @@ rule ensembl:
     shell:
         """python ensembl.py {input} {params.gnoname}"""
 
+# Index Elasticsearch
 rule IndexGnomads:
     input:
         "data/{gnomad}ensembl.json"
@@ -35,7 +39,7 @@ rule IndexGnomads:
     shell:
         """python elastic.py {params.gnoname} {input}"""
 
-
+# Generate a report
 rule report:
     input:
         "data/{gnomad}done.txt"

@@ -5,6 +5,7 @@ import requests, sys
 server = "http://rest.ensembl.org"
 
 def main():
+    """Query Ensembl for data using the rsID"""
     data = []
     docs = json.load(open(f'./{sys.argv[1]}'))
     
@@ -35,7 +36,6 @@ def main():
                 pass
 
     with open(f"data/{sys.argv[2]}ensembl.json", "w") as out:
-        #data = str(data).replace("\'","\"")
         data = json.dump(data, out)
 
 

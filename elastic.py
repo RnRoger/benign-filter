@@ -1,16 +1,13 @@
 import json
 import sys
 from elasticsearch import Elasticsearch, helpers
-ES = Elasticsearch([{'host': 'localhost', 'port': '9200'}])
-try:
-    ES.indices.create(index=f'{sys.argv[1]}')
-except:
-    pass
 
-docs = json.load(open(f'./{sys.argv[2]}'))
+# Establish a connection to Elasticsearch
+ES = Elasticsearch([{'host': 'localhost', 'port': '9200'}])
 
 
 def index(docs):
+    """Index the json file in Elasticsearch"""
     data = []
     count = 0
     for doc in docs:
@@ -39,5 +36,12 @@ def index(docs):
     with open(f"data/{sys.argv[1]}done.txt", "w") as outfile:
         outfile.write("gj")
 
+if __name__ == "__main__":
+    # Create the index if it doesn't exist yet
+    try:
+        ES.indices.create(index=f'{sys.argv[1]}')
+    except:
+        pass
 
-index(docs)
+    docs = json.load(open(f'./{sys.argv[2]}'))
+    index(docs)

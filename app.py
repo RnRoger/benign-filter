@@ -22,6 +22,7 @@ def index():
     # Retrieve data from request
     data = request.get_json()
     
+    # Default file
     filename = "data/gnomad.exomes.r2.1.1.sites.21.vcf"
     # Load the file
     if 'filename' in data:
@@ -39,7 +40,6 @@ def index():
 
 class Classifier:
     def __init__(self):
-        # self.sumthin = ?
         pass
     
     def load_file(self, filename):
@@ -54,17 +54,19 @@ class Classifier:
         # Load reader
         vcf_reader= self.vcf_reader
         
-        # List for benign alleles
-        exomes = []
-        count=0
+        # List for benign hits
+        benign = []
+        count = 0
         # Use an enumerator to go through the records
         for record in vcf_reader:
-            count+=1
+            count += 1
             try:
-                if count <10: # For testing, only take the first x rows
-                #if count > 0: # Use all rows
+                # For testing, only take the first x rows
+                # Due to the Ensembl rule the program will take a long time to run otherwise.
+                if count <10:
+                # If count > 0: # Uncomment to use all rows
                     # Get information from the record
-                    attr = {
+                    attributes = {
                         'ID' : count,
                         'CHROM' : record.CHROM,
                         'POS' : record.POS,
@@ -73,14 +75,14 @@ class Classifier:
                         'Allele frequency': record.INFO["AF"][0]
                     }
                     # Store the allele if it is found in less than 1% of the population
-                    if attr.get('Allele frequency') < 0.01:
-                        exomes.append(attr)
+                    if attributes.get('Allele frequency') < 0.01:
+                        benign.append(attributes)
                 else:
                     break
             except:
                 pass
     
-        return exomes
+        return benign
 
 
 class Float32Encoder(JSONEncoder):
