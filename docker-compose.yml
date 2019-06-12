@@ -1,0 +1,42 @@
+version: "2"
+services:
+  app:
+    container_name: benign-filter-container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./data:/app/data # No need to copy the data folder
+    ports:
+      - 8080:80
+    networks: 
+      - benign-filter-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    container_name: elasticsearch-container
+    volumes:
+      - data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - benign-filter-network
+
+  kibana:
+    container_name: benign-filter-kibana
+    image: docker.elastic.co/kibana/kibana:6.3.2
+    environment: 
+      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    networks:
+      - benign-filter-network
+
+volumes:
+  data:
+    driver: local
+
+networks:
+  benign-filter-network:

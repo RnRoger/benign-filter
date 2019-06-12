@@ -1,0 +1,47 @@
+# 18, 21, y
+GNOMAD_FILES = ["18", "y"]
+
+rule all:
+    input:
+        expand("data/{gnomad}report.html", gnomad=GNOMAD_FILES)
+
+rule SendRequest:
+    input:
+        "data/gnomad.exomes.r2.1.1.sites.{gnomad}.vcf",
+    params:
+        gnoname = "{gnomad}"
+    output:
+        "data/{gnomad}.json"
+    shell:
+        "python send_curl.py {input} {params.gnoname}"
+
+rule ensembl:
+    input:
+        "data/{gnomad}.json",
+    params:
+        gnoname = "{gnomad}"
+    output:
+        "data/{gnomad}ensembl.json"
+    shell:
+        """python ensembl.py {input} {params.gnoname}"""
+
+rule IndexGnomads:
+    input:
+        "data/{gnomad}ensembl.json"
+    params:
+        gnoname = "{gnomad}"
+    output:
+        "data/{gnomad}done.txt"
+    shell:
+        """python elastic.py {params.gnoname} {input}"""
+
+
+rule report:
+    input:
+        "data/{gnomad}done.txt"
+    params:
+        gnoname = "{gnomad}"
+    output:
+        "data/{gnomad}report.html"
+    shell:
+        """python report.py {params.gnoname}"""

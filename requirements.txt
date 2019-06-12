@@ -1,0 +1,7 @@
+numpy
+flask
+python-dotenv
+PyVCF
+pandas
+Snakemake
+elasticsearch
